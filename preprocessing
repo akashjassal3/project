@@ -1,0 +1,22 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Read the CSV file
+df = pd.read_csv('ObesityDataSet_raw_and_data_sinthetic.csv')
+df['BMI'] = df['Weight']/(df['Height']**2)
+# Define categorical variables
+categorical_variables = ['Gender', 'family_history_with_overweight', 'FAVC', 'SMOKE', 'SCC', 'CALC', 'MTRANS', 'NObeyesdad']
+
+# Initialize LabelEncoder
+le = LabelEncoder()
+
+# Loop over each categorical column (except 'CAEC') and apply Label Encoder
+for col in categorical_variables:
+    df[col] = le.fit_transform(df[col])
+
+# Now let's handle 'CAEC' separately with ordinal encoding
+df['CAEC'] = df['CAEC'].map({'Never': 0, 'Sometimes': 1, 'Frequently': 2, 'Always': 3})
+
+# Save the processed data to a new CSV file
+df.to_csv('processed_obesity11.csv', index=False)
+
