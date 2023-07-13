@@ -1,0 +1,60 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# Assuming data is the name of your DataFrame
+df = pd.read_csv("ObesityDataSet_raw_and_data_sinthetic(1).csv")
+
+# Convert categorical variable to numerical if it's not
+df['Obesity Class'] = df['Obesity Class'].astype('category').cat.codes
+
+# Independent variable
+X = df[['Weight']]
+
+# Dependent variable
+y = df['Obesity Class']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Create linear regression model
+model = LinearRegression()
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions using the test set
+y_pred = model.predict(X_test)
+
+# Calculate Mean Absolute Error (MAE)
+mae = mean_absolute_error(y_test, y_pred)
+print(f'Mean Absolute Error: {mae}')
+
+# Calculate Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# Calculate R-squared score
+r2 = r2_score(y_test, y_pred)
+print(f'R-squared Score: {r2}')
+
+
+# Plotting actual vs predicted values
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+plt.scatter(X_test, y_pred, color='red', label='Predicted')
+plt.title('Actual vs Predicted')
+plt.xlabel('Weight')
+plt.ylabel('Obesity Class')
+plt.legend()
+plt.show()
+
+# Plotting residuals
+plt.scatter(X_test, y_test - y_pred)
+plt.title('Residuals')
+plt.xlabel('Weight')
+plt.ylabel('Residuals')
+plt.hlines(y=0, xmin=X_test.min(), xmax=X_test.max(), colors='r')
+plt.show()
+
